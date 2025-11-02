@@ -1,11 +1,12 @@
 {
   "tasks": {
     "dev": "deno run --watch main.ts",
-    "check": "deno check main.ts",
+    "check": "deno check --allow-import core/*.ts",
     "ok": "deno fmt && deno lint && deno task check"
   },
   "imports": {
-    "@std/assert": "jsr:@std/assert@1"
+    "@std/assert": "jsr:@std/assert@1",
+    "grammy": "https://deno.land/x/grammy@v1.30.0/mod.ts"
   },
   "fmt": {
     "proseWrap": "preserve"
