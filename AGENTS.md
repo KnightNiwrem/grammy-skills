@@ -98,7 +98,7 @@ The `core/` directory contains idiomatic examples focused on demonstrating speci
 - **No import.meta.main checks**: Examples should start the bot directly with `bot.start()`
 - **Direct instantiation**: Get `BOT_TOKEN` from environment and create bot instance at module level
 - **Focus on patterns**: Each example demonstrates one specific pattern or concept
-- **Minimal comments**: Only include comments that explain non-obvious patterns or grammY-specific concepts
+- **Educational comments**: Include clear, helpful comments that explain the pattern being demonstrated and grammY-specific concepts to make examples readable and educational
 - **Self-contained**: Each example should be runnable independently with just a BOT_TOKEN environment variable
 
 Example structure:
