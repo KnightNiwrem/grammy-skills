@@ -92,7 +92,7 @@ This guide defines expectations for automation and maintainers contributing to t
 
 ## Project Structure
 
-```
+```text
 grammy-skills/
 ├── core/           # Idiomatic grammY examples (no plugins)
 ├── main.ts         # Main entry point
