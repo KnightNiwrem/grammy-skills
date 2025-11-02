@@ -89,14 +89,7 @@ export BOT_TOKEN="your_bot_token_here"
 deno run --allow-net --allow-env core/basic_bot.ts
 ```
 
-Or import and use the exported functions:
-
-```typescript
-import { createBot } from "./core/basic_bot.ts";
-
-const bot = createBot("your_bot_token");
-bot.start();
-```
+The examples are self-contained and demonstrate idiomatic grammY patterns. Each file creates and configures a bot instance directly, making them simple to understand and adapt to your needs.
 
 ## Guidelines
 
