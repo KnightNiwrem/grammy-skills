@@ -6,7 +6,6 @@
  * - Middleware composition
  * - Logging middleware
  * - Authentication middleware
- * - Error boundaries
  *
  * Middleware in grammY processes updates in a stack-like manner.
  * Each middleware can either handle the update or pass it to the next middleware.
@@ -61,23 +60,8 @@ function authenticationMiddleware(
   };
 }
 
-async function errorHandlingMiddleware(
-  ctx: Context,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    await next();
-  } catch (error) {
-    console.error("Error processing update:", error);
-    await ctx.reply(
-      "An error occurred while processing your request. Please try again later.",
-    );
-  }
-}
-
 const allowedUsers = new Set([123456789, 987654321]);
 
-bot.use(errorHandlingMiddleware);
 bot.use(loggingMiddleware);
 bot.use(responseTimeMiddleware);
 bot.use(authenticationMiddleware(allowedUsers));

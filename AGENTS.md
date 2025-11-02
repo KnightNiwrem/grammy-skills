@@ -76,6 +76,7 @@ This guide defines expectations for automation and maintainers contributing to t
 - Always call `next()` if you want to allow further processing
 - Order matters: first middleware receives updates first
 - Use middleware for modular, reusable functionality
+- Avoid making Telegram API calls (for example, `ctx.reply`) inside error handlers; bots can be restricted from sending messages, which would surface secondary errors
 
 ### Code Organization for Large Bots
 
