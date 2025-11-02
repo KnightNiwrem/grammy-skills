@@ -21,72 +21,72 @@ export function createFilterBot(token: string): Bot {
 
   // Filter for text messages only
   // This is one of the most common filters
-  bot.on("message:text", (ctx) => {
+  bot.on("message:text", async (ctx) => {
     // ctx.msg is a shortcut for ctx.message
     const text = ctx.msg.text;
 
-    return ctx.reply(`You sent text: ${text}`);
+    await ctx.reply(`You sent text: ${text}`);
   });
 
   // Filter for photo messages
-  bot.on("message:photo", (ctx) => {
+  bot.on("message:photo", async (ctx) => {
     // Photos come as an array of different sizes
     // The last element is usually the highest resolution
     const photos = ctx.msg.photo;
     const largestPhoto = photos[photos.length - 1];
 
-    return ctx.reply(
+    await ctx.reply(
       `Received photo with file_id: ${largestPhoto.file_id}\n` +
         `Size: ${largestPhoto.width}x${largestPhoto.height}`,
     );
   });
 
   // Filter for messages with captions
-  bot.on("message:caption", (ctx) => {
+  bot.on("message:caption", async (ctx) => {
     // ctx.msg.caption exists only if there's a caption
     const caption = ctx.msg.caption;
 
-    return ctx.reply(`Your caption: ${caption}`);
+    await ctx.reply(`Your caption: ${caption}`);
   });
 
   // Filter for messages with URLs in text
   // Uses sub-query syntax for entities
-  bot.on("message:entities:url", (ctx) => {
+  bot.on("message:entities:url", async (ctx) => {
     // Access entities from the message
     const entities = ctx.msg.entities;
     const urlCount = entities?.filter((e) => e.type === "url").length ?? 0;
 
-    return ctx.reply(`Found ${urlCount} URL(s) in your message.`);
+    await ctx.reply(`Found ${urlCount} URL(s) in your message.`);
   });
 
   // Filter for messages with mentions
-  bot.on("message:entities:mention", (ctx) => {
+  bot.on("message:entities:mention", async (ctx) => {
     const entities = ctx.msg.entities;
     const mentionCount = entities?.filter((e) => e.type === "mention").length ??
       0;
 
-    return ctx.reply(`You mentioned ${mentionCount} user(s).`);
+    await ctx.reply(`You mentioned ${mentionCount} user(s).`);
   });
 
   // Filter for forwarded messages
-  bot.on(":forward_origin", (ctx) => {
+  bot.on(":forward_origin", async (ctx) => {
     // This catches all forwarded messages
-    return ctx.reply("You forwarded a message.");
+    await ctx.reply("You forwarded a message.");
   });
 
   // Filter for messages in private chats only
   bot.on("message").filter(
     (ctx) => ctx.chat.type === "private",
-    (ctx) => {
-      return ctx.reply("This is a private chat message.");
+    async (ctx) => {
+      await ctx.reply("This is a private chat message.");
     },
   );
 
   // Filter for messages in groups only
   bot.on("message").filter(
     (ctx) => ctx.chat.type === "group" || ctx.chat.type === "supergroup",
-    (ctx) => {
-      return ctx.reply("This is a group message.");
+    async (ctx) => {
+      await ctx.reply("This is a group message.");
     },
   );
 
@@ -96,24 +96,24 @@ export function createFilterBot(token: string): Bot {
 
   bot.on("message").filter(
     (ctx) => ctx.from !== undefined && adminIds.has(ctx.from.id),
-    (ctx) => {
-      return ctx.reply("Hello, admin!");
+    async (ctx) => {
+      await ctx.reply("Hello, admin!");
     },
   );
 
   // Handling edited messages
   // Use ":edited" or "edited_message" to catch edits
-  bot.on("edited_message:text", (ctx) => {
+  bot.on("edited_message:text", async (ctx) => {
     // In real apps, you'd track the previous version
     const newText = ctx.editedMessage.text;
 
-    return ctx.reply(
+    await ctx.reply(
       `You edited your message to: ${newText}`,
     );
   });
 
   // Command demonstrating comprehensive context usage
-  bot.command("context", (ctx) => {
+  bot.command("context", async (ctx) => {
     // Access various context properties
     const info = [
       "Context Information:",
@@ -137,52 +137,40 @@ export function createFilterBot(token: string): Bot {
       `- Text: ${ctx.msg && "text" in ctx.msg ? ctx.msg.text : "N/A"}`,
     ].join("\n");
 
-    return ctx.reply(info);
+    await ctx.reply(info);
   });
 
   // Command to demonstrate entity extraction
-  bot.command("entities", (ctx) => {
+  bot.command("entities", async (ctx) => {
     const msg = ctx.msg;
 
     // Check if message has text
     if (!("text" in msg)) {
-      return ctx.reply("No text in this message.");
+      await ctx.reply("No text in this message.");
+      return;
     }
 
     // Get all entities in the message
     const entities = msg.entities;
 
     if (!entities || entities.length === 0) {
-      return ctx.reply("No entities found in this message.");
+      await ctx.reply("No entities found in this message.");
+      return;
     }
 
     const entityInfo = entities.map((entity) => {
       return `- ${entity.type} at offset ${entity.offset}`;
     }).join("\n");
 
-    return ctx.reply(`Found ${entities.length} entities:\n${entityInfo}`);
+    await ctx.reply(`Found ${entities.length} entities:\n${entityInfo}`);
   });
 
   // Catch-all for any message type not handled above
-  bot.on("message", (ctx) => {
-    return ctx.reply(
+  bot.on("message", async (ctx) => {
+    await ctx.reply(
       "I received a message but I'm not sure how to handle it.",
     );
   });
 
   return bot;
-}
-
-// Example usage
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  const bot = createFilterBot(token);
-  console.log("Filter bot is starting...");
-  bot.start();
 }

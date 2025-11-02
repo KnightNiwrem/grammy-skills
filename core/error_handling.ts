@@ -268,8 +268,8 @@ export function createErrorHandlingBot(token: string): Bot {
     throw new Error("This is a test error");
   });
 
-  bot.command("help", (ctx) => {
-    return ctx.reply(
+  bot.command("help", async (ctx) => {
+    await ctx.reply(
       "Error Handling Demo Commands:\n\n" +
         "/divide <num> <num> - Division with error handling\n" +
         "/sendphoto - Handle API errors\n" +
@@ -280,18 +280,4 @@ export function createErrorHandlingBot(token: string): Bot {
   });
 
   return bot;
-}
-
-// Example usage
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  const bot = createErrorHandlingBot(token);
-  console.log("Error handling bot is starting...");
-  bot.start();
 }

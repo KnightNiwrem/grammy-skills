@@ -24,10 +24,11 @@ import { Bot, Composer, type Context } from "grammy";
 export function createUserFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
-  composer.command("profile", (ctx) => {
+  composer.command("profile", async (ctx) => {
     const user = ctx.from;
     if (!user) {
-      return ctx.reply("User information not available.");
+      await ctx.reply("User information not available.");
+      return;
     }
 
     const profile = [
@@ -38,11 +39,11 @@ export function createUserFeature(): Composer<Context> {
       `Language: ${user.language_code ?? "Unknown"}`,
     ].join("\n");
 
-    return ctx.reply(profile);
+    await ctx.reply(profile);
   });
 
-  composer.command("settings", (ctx) => {
-    return ctx.reply(
+  composer.command("settings", async (ctx) => {
+    await ctx.reply(
       "Settings:\n" +
         "• Language: English\n" +
         "• Notifications: Enabled\n" +
@@ -64,15 +65,16 @@ export function createAdminFeature(
   const composer = new Composer<Context>();
 
   // Authorization middleware for this feature
-  composer.use((ctx, next) => {
+  composer.use(async (ctx, next) => {
     if (!ctx.from || !adminIds.has(ctx.from.id)) {
-      return ctx.reply("This command is only available to administrators.");
+      await ctx.reply("This command is only available to administrators.");
+      return;
     }
     return next();
   });
 
-  composer.command("stats", (ctx) => {
-    return ctx.reply(
+  composer.command("stats", async (ctx) => {
+    await ctx.reply(
       "Bot Statistics:\n" +
         "• Users: 1,234\n" +
         "• Messages: 45,678\n" +
@@ -80,19 +82,20 @@ export function createAdminFeature(
     );
   });
 
-  composer.command("broadcast", (ctx) => {
+  composer.command("broadcast", async (ctx) => {
     const message = ctx.match?.toString().trim();
 
     if (!message) {
-      return ctx.reply("Usage: /broadcast <message>");
+      await ctx.reply("Usage: /broadcast <message>");
+      return;
     }
 
     // In a real bot, this would send to all users
-    return ctx.reply(`Broadcasting message: "${message}"`);
+    await ctx.reply(`Broadcasting message: "${message}"`);
   });
 
-  composer.command("maintenance", (ctx) => {
-    return ctx.reply("Maintenance mode toggled.");
+  composer.command("maintenance", async (ctx) => {
+    await ctx.reply("Maintenance mode toggled.");
   });
 
   return composer;
@@ -106,14 +109,14 @@ export function createAdminFeature(
 export function createHelpFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
-  composer.command("start", (ctx) => {
-    return ctx.reply(
+  composer.command("start", async (ctx) => {
+    await ctx.reply(
       "Welcome to the bot! Use /help to see available commands.",
     );
   });
 
-  composer.command("help", (ctx) => {
-    return ctx.reply(
+  composer.command("help", async (ctx) => {
+    await ctx.reply(
       "Available Commands:\n\n" +
         "User Commands:\n" +
         "/profile - View your profile\n" +
@@ -128,8 +131,8 @@ export function createHelpFeature(): Composer<Context> {
     );
   });
 
-  composer.command("about", (ctx) => {
-    return ctx.reply(
+  composer.command("about", async (ctx) => {
+    await ctx.reply(
       "This bot demonstrates modular composition patterns in grammY.\n" +
         "Version: 1.0.0",
     );
@@ -146,29 +149,30 @@ export function createHelpFeature(): Composer<Context> {
 export function createUtilityFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
-  composer.command("echo", (ctx) => {
+  composer.command("echo", async (ctx) => {
     const text = ctx.match?.toString().trim();
 
     if (!text) {
-      return ctx.reply("Usage: /echo <text>");
+      await ctx.reply("Usage: /echo <text>");
+      return;
     }
 
-    return ctx.reply(text);
+    await ctx.reply(text);
   });
 
-  composer.command("time", (ctx) => {
+  composer.command("time", async (ctx) => {
     const now = new Date();
     const timeStr = now.toISOString();
 
-    return ctx.reply(`Current time: ${timeStr}`);
+    await ctx.reply(`Current time: ${timeStr}`);
   });
 
-  composer.command("ping", (ctx) => {
+  composer.command("ping", async (ctx) => {
     const sentTime = ctx.msg?.date ?? 0;
     const now = Math.floor(Date.now() / 1000);
     const latency = now - sentTime;
 
-    return ctx.reply(`Pong! Latency: ${latency}s`);
+    await ctx.reply(`Pong! Latency: ${latency}s`);
   });
 
   return composer;
@@ -183,36 +187,39 @@ export function createMessageFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
   // Handle text messages
-  composer.on("message:text", (ctx) => {
+  composer.on("message:text", async (ctx) => {
     const text = ctx.msg.text.toLowerCase();
 
     // Simple keyword responses
     if (text.includes("hello") || text.includes("hi")) {
-      return ctx.reply("Hello! How can I help you today?");
+      await ctx.reply("Hello! How can I help you today?");
+      return;
     }
 
     if (text.includes("bye") || text.includes("goodbye")) {
-      return ctx.reply("Goodbye! Have a great day!");
+      await ctx.reply("Goodbye! Have a great day!");
+      return;
     }
 
     if (text.includes("help")) {
-      return ctx.reply("Use /help to see all available commands.");
+      await ctx.reply("Use /help to see all available commands.");
+      return;
     }
 
     // Default response
-    return ctx.reply(
+    await ctx.reply(
       "I received your message. Use /help to see what I can do.",
     );
   });
 
   // Handle photos
-  composer.on("message:photo", (ctx) => {
-    return ctx.reply("Nice photo! 📸");
+  composer.on("message:photo", async (ctx) => {
+    await ctx.reply("Nice photo! 📸");
   });
 
   // Handle stickers
-  composer.on("message:sticker", (ctx) => {
-    return ctx.reply("Cool sticker!");
+  composer.on("message:sticker", async (ctx) => {
+    await ctx.reply("Cool sticker!");
   });
 
   return composer;
@@ -290,41 +297,16 @@ export function createStatefulFeature(): Composer<Context> {
     return next();
   });
 
-  composer.command("mycount", (ctx) => {
+  composer.command("mycount", async (ctx) => {
     const userId = ctx.from?.id;
     if (!userId) {
-      return ctx.reply("User ID not available.");
+      await ctx.reply("User ID not available.");
+      return;
     }
 
     const count = messageCount.get(userId) ?? 0;
-    return ctx.reply(`You've sent ${count} messages.`);
+    await ctx.reply(`You've sent ${count} messages.`);
   });
 
   return composer;
-}
-
-// Example usage
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  // Parse admin IDs from environment
-  const adminIdsStr = Deno.env.get("ADMIN_IDS") ?? "";
-  const adminIds = new Set(
-    adminIdsStr.split(",").map((id) => parseInt(id.trim())).filter((id) =>
-      !isNaN(id)
-    ),
-  );
-
-  const bot = createComposedBot(token, { adminIds });
-
-  // Optionally add stateful feature
-  bot.use(createStatefulFeature());
-
-  console.log("Composed bot is starting...");
-  bot.start();
 }
