@@ -98,4 +98,4 @@ The examples are self-contained and demonstrate idiomatic grammY patterns. Each 
 - Code follows Deno best practices (see [AGENTS.md](../AGENTS.md))
 - Examples are meant to be educational and reusable
 - Each example is well-documented with explanatory comments
-- Functions are exported for reuse in your own bots
+- Examples instantiate and configure bots directly; copy or adapt full example files into your project if you want to reuse patterns
