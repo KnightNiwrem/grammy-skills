@@ -16,12 +16,12 @@
 
 import { Bot, Composer, type Context } from "grammy";
 
-/**
- * User management feature module.
- *
- * Groups all user-related commands and handlers together.
- */
-export function createUserFeature(): Composer<Context> {
+const token = Deno.env.get("BOT_TOKEN");
+if (!token) throw new Error("BOT_TOKEN is required");
+
+const bot = new Bot(token);
+
+function createUserFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
   composer.command("profile", async (ctx) => {
@@ -54,14 +54,7 @@ export function createUserFeature(): Composer<Context> {
   return composer;
 }
 
-/**
- * Admin feature module.
- *
- * Groups all admin commands together with authorization check.
- */
-export function createAdminFeature(
-  adminIds: Set<number>,
-): Composer<Context> {
+function createAdminFeature(adminIds: Set<number>): Composer<Context> {
   const composer = new Composer<Context>();
 
   // Authorization middleware for this feature
@@ -101,12 +94,7 @@ export function createAdminFeature(
   return composer;
 }
 
-/**
- * Help feature module.
- *
- * Provides help and information commands.
- */
-export function createHelpFeature(): Composer<Context> {
+function createHelpFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
   composer.command("start", async (ctx) => {
@@ -141,12 +129,7 @@ export function createHelpFeature(): Composer<Context> {
   return composer;
 }
 
-/**
- * Utility feature module.
- *
- * Provides utility commands.
- */
-export function createUtilityFeature(): Composer<Context> {
+function createUtilityFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
   composer.command("echo", async (ctx) => {
@@ -178,12 +161,7 @@ export function createUtilityFeature(): Composer<Context> {
   return composer;
 }
 
-/**
- * Message handling feature module.
- *
- * Handles non-command messages.
- */
-export function createMessageFeature(): Composer<Context> {
+function createMessageFeature(): Composer<Context> {
   const composer = new Composer<Context>();
 
   // Handle text messages
@@ -225,88 +203,30 @@ export function createMessageFeature(): Composer<Context> {
   return composer;
 }
 
-/**
- * Creates a fully composed bot from feature modules.
- *
- * This demonstrates the recommended way to structure a large bot:
- * 1. Break functionality into feature modules
- * 2. Each module is a Composer with related handlers
- * 3. Compose all modules into the main bot
- * 4. Add cross-cutting concerns (logging, error handling) as middleware
- */
-export function createComposedBot(
-  token: string,
-  options: { adminIds?: Set<number> } = {},
-): Bot {
-  const bot = new Bot(token);
+const adminIds = new Set([123456789]);
 
-  // Admin IDs (should come from configuration in production)
-  const adminIds = options.adminIds ?? new Set([123456789]);
+bot.use((ctx, next) => {
+  console.log(
+    `[${new Date().toISOString()}] Update from ${ctx.from?.id}: ${
+      ctx.message?.text ?? "non-text"
+    }`,
+  );
+  return next();
+});
 
-  // Logging middleware (cross-cutting concern)
-  bot.use((ctx, next) => {
-    console.log(
-      `[${new Date().toISOString()}] Update from ${ctx.from?.id}: ${
-        ctx.message?.text ?? "non-text"
-      }`,
-    );
-    return next();
-  });
+bot.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (error) {
+    console.error("Error handling update:", error);
+    await ctx.reply("An error occurred. Please try again later.");
+  }
+});
 
-  // Error handling middleware (cross-cutting concern)
-  bot.use(async (ctx, next) => {
-    try {
-      await next();
-    } catch (error) {
-      console.error("Error handling update:", error);
-      await ctx.reply(
-        "An error occurred. Please try again later.",
-      );
-    }
-  });
+bot.use(createHelpFeature());
+bot.use(createUserFeature());
+bot.use(createAdminFeature(adminIds));
+bot.use(createUtilityFeature());
+bot.use(createMessageFeature());
 
-  // Compose feature modules
-  // Order matters: more specific handlers should come before general ones
-  bot.use(createHelpFeature());
-  bot.use(createUserFeature());
-  bot.use(createAdminFeature(adminIds));
-  bot.use(createUtilityFeature());
-  bot.use(createMessageFeature());
-
-  return bot;
-}
-
-/**
- * Alternative composition pattern: Feature with state.
- *
- * This shows how to create a feature with internal state.
- */
-export function createStatefulFeature(): Composer<Context> {
-  const composer = new Composer<Context>();
-
-  // Internal state (in production, use a proper database)
-  const messageCount = new Map<number, number>();
-
-  composer.use((ctx, next) => {
-    // Track messages per user
-    const userId = ctx.from?.id;
-    if (userId) {
-      const count = messageCount.get(userId) ?? 0;
-      messageCount.set(userId, count + 1);
-    }
-    return next();
-  });
-
-  composer.command("mycount", async (ctx) => {
-    const userId = ctx.from?.id;
-    if (!userId) {
-      await ctx.reply("User ID not available.");
-      return;
-    }
-
-    const count = messageCount.get(userId) ?? 0;
-    await ctx.reply(`You've sent ${count} messages.`);
-  });
-
-  return composer;
-}
+bot.start();

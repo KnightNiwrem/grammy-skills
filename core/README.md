@@ -89,14 +89,7 @@ export BOT_TOKEN="your_bot_token_here"
 deno run --allow-net --allow-env core/basic_bot.ts
 ```
 
-Or import and use the exported functions:
-
-```typescript
-import { createBot } from "./core/basic_bot.ts";
-
-const bot = createBot("your_bot_token");
-bot.start();
-```
+The examples are self-contained and demonstrate idiomatic grammY patterns. Each file creates and configures a bot instance directly, making them simple to understand and adapt to your needs.
 
 ## Guidelines
 
@@ -105,4 +98,4 @@ bot.start();
 - Code follows Deno best practices (see [AGENTS.md](../AGENTS.md))
 - Examples are meant to be educational and reusable
 - Each example is well-documented with explanatory comments
-- Functions are exported for reuse in your own bots
+- Examples instantiate and configure bots directly; copy or adapt full example files into your project if you want to reuse patterns

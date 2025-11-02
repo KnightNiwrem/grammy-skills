@@ -13,11 +13,11 @@
 
 import { Bot, type CommandContext, type Context } from "grammy";
 
-/**
- * Simple command handler that responds with static text.
- *
- * This is the most basic command pattern.
- */
+const token = Deno.env.get("BOT_TOKEN");
+if (!token) throw new Error("BOT_TOKEN is required");
+
+const bot = new Bot(token);
+
 async function handleStartCommand(ctx: CommandContext<Context>): Promise<void> {
   await ctx.reply("Welcome! Use /help to see available commands.");
 }
@@ -175,31 +175,22 @@ async function handleAdminCommand(ctx: CommandContext<Context>): Promise<void> {
   }
 }
 
-/**
- * Creates a bot with various command handling patterns.
- */
-export function createCommandBot(token: string): Bot {
-  const bot = new Bot(token);
+bot.command("start", handleStartCommand);
+bot.command("greet", handleGreetCommand);
+bot.command("calc", handleCalcCommand);
+bot.command("info", handleInfoCommand);
+bot.command("admin", handleAdminCommand);
 
-  // Register command handlers
-  bot.command("start", handleStartCommand);
-  bot.command("greet", handleGreetCommand);
-  bot.command("calc", handleCalcCommand);
-  bot.command("info", handleInfoCommand);
-  bot.command("admin", handleAdminCommand);
+bot.command("help", async (ctx) => {
+  await ctx.reply(
+    "Available Commands:\n\n" +
+      "/start - Start the bot\n" +
+      "/help - Show this help message\n" +
+      "/greet <name> - Greet someone by name\n" +
+      "/calc <num> <op> <num> - Calculate two numbers\n" +
+      "/info - Show your user and chat information\n" +
+      "/admin <subcommand> - Admin operations",
+  );
+});
 
-  // Help command that lists all available commands
-  bot.command("help", async (ctx) => {
-    await ctx.reply(
-      "Available Commands:\n\n" +
-        "/start - Start the bot\n" +
-        "/help - Show this help message\n" +
-        "/greet <name> - Greet someone by name\n" +
-        "/calc <num> <op> <num> - Calculate two numbers\n" +
-        "/info - Show your user and chat information\n" +
-        "/admin <subcommand> - Admin operations",
-    );
-  });
-
-  return bot;
-}
+bot.start();
