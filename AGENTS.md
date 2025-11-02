@@ -90,6 +90,35 @@ This guide defines expectations for automation and maintainers contributing to t
 - Use proper context types for better IDE support and type checking
 - Leverage grammY's built-in type system for safer bot development
 
+### Core Examples Style Guide
+
+The `core/` directory contains idiomatic examples focused on demonstrating specific patterns:
+
+- **No wrapper functions**: Examples should NOT use `createBot()` or similar wrapper functions
+- **No import.meta.main checks**: Examples should start the bot directly with `bot.start()`
+- **Direct instantiation**: Get `BOT_TOKEN` from environment and create bot instance at module level
+- **Focus on patterns**: Each example demonstrates one specific pattern or concept
+- **Minimal comments**: Only include comments that explain non-obvious patterns or grammY-specific concepts
+- **Self-contained**: Each example should be runnable independently with just a BOT_TOKEN environment variable
+
+Example structure:
+
+```typescript
+import { Bot } from "grammy";
+
+const token = Deno.env.get("BOT_TOKEN");
+if (!token) throw new Error("BOT_TOKEN is required");
+
+const bot = new Bot(token);
+
+// Register handlers demonstrating the pattern
+bot.command("start", async (ctx) => {
+  await ctx.reply("Hello!");
+});
+
+bot.start();
+```
+
 ## Project Structure
 
 ```text

@@ -229,6 +229,4 @@ bot.use(createAdminFeature(adminIds));
 bot.use(createUtilityFeature());
 bot.use(createMessageFeature());
 
-if (import.meta.main) {
-  bot.start();
-}
+bot.start();

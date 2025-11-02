@@ -55,6 +55,4 @@ bot.on("message:text", async (ctx) => {
   await ctx.reply(`You said: ${messageText}`);
 });
 
-if (import.meta.main) {
-  bot.start();
-}
+bot.start();

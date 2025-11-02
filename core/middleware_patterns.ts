@@ -94,6 +94,4 @@ bot.on("message:text", async (ctx) => {
   await ctx.reply(`Echo: ${ctx.message.text}`);
 });
 
-if (import.meta.main) {
-  bot.start();
-}
+bot.start();

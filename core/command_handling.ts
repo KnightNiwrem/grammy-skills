@@ -193,6 +193,4 @@ bot.command("help", async (ctx) => {
   );
 });
 
-if (import.meta.main) {
-  bot.start();
-}
+bot.start();
