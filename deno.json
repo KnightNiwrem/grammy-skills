@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run --watch main.ts",
-    "check": "deno check main.ts",
+    "check": "deno check --allow-import core/*.ts",
     "ok": "deno fmt && deno lint && deno task check"
   },
   "imports": {

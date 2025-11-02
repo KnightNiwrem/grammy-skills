@@ -52,33 +52,26 @@ export function createFilterBot(token: string): Bot {
   // Filter for messages with URLs in text
   // Uses sub-query syntax for entities
   bot.on("message:entities:url", (ctx) => {
-    // Extract all URL entities from the message
-    const urls = ctx.msg.entities()
-      .filter((entity) => entity.type === "url")
-      .map((entity) => entity.text);
+    // Access entities from the message
+    const entities = ctx.msg.entities;
+    const urlCount = entities?.filter((e) => e.type === "url").length ?? 0;
 
-    return ctx.reply(
-      `Found ${urls.length} URL(s):\n${urls.join("\n")}`,
-    );
+    return ctx.reply(`Found ${urlCount} URL(s) in your message.`);
   });
 
   // Filter for messages with mentions
   bot.on("message:entities:mention", (ctx) => {
-    const mentions = ctx.msg.entities()
-      .filter((entity) => entity.type === "mention")
-      .map((entity) => entity.text);
+    const entities = ctx.msg.entities;
+    const mentionCount = entities?.filter((e) => e.type === "mention").length ??
+      0;
 
-    return ctx.reply(
-      `You mentioned: ${mentions.join(", ")}`,
-    );
+    return ctx.reply(`You mentioned ${mentionCount} user(s).`);
   });
 
   // Filter for forwarded messages
-  bot.on("message:forward_date", (ctx) => {
-    // Access forward information
-    const forwardFrom = ctx.msg.forward_from?.first_name ?? "someone";
-
-    return ctx.reply(`You forwarded a message from ${forwardFrom}`);
+  bot.on(":forward_origin", (ctx) => {
+    // This catches all forwarded messages
+    return ctx.reply("You forwarded a message.");
   });
 
   // Filter for messages in private chats only
@@ -149,19 +142,22 @@ export function createFilterBot(token: string): Bot {
 
   // Command to demonstrate entity extraction
   bot.command("entities", (ctx) => {
-    if (!ctx.msg.text) {
+    const msg = ctx.msg;
+
+    // Check if message has text
+    if (!("text" in msg)) {
       return ctx.reply("No text in this message.");
     }
 
     // Get all entities in the message
-    const entities = ctx.msg.entities();
+    const entities = msg.entities;
 
-    if (entities.length === 0) {
+    if (!entities || entities.length === 0) {
       return ctx.reply("No entities found in this message.");
     }
 
     const entityInfo = entities.map((entity) => {
-      return `- ${entity.type}: "${entity.text}"`;
+      return `- ${entity.type} at offset ${entity.offset}`;
     }).join("\n");
 
     return ctx.reply(`Found ${entities.length} entities:\n${entityInfo}`);
