@@ -39,16 +39,13 @@ bot.on("message:caption", async (ctx) => {
 });
 
 bot.on("message:entities:url", async (ctx) => {
-  const entities = ctx.msg.entities;
-  const urlCount = entities?.filter((e) => e.type === "url").length ?? 0;
-  await ctx.reply(`Found ${urlCount} URL(s) in your message.`);
+  const urlEntities = ctx.entities("url");
+  await ctx.reply(`Found ${urlEntities.length} URL(s) in your message.`);
 });
 
 bot.on("message:entities:mention", async (ctx) => {
-  const entities = ctx.msg.entities;
-  const mentionCount = entities?.filter((e) => e.type === "mention").length ??
-    0;
-  await ctx.reply(`You mentioned ${mentionCount} user(s).`);
+  const mentionEntities = ctx.entities("mention");
+  await ctx.reply(`You mentioned ${mentionEntities.length} user(s).`);
 });
 
 bot.on(":forward_origin", async (ctx) => {
@@ -117,9 +114,9 @@ bot.command("entities", async (ctx) => {
     return;
   }
 
-  const entities = msg.entities;
+  const entities = ctx.entities();
 
-  if (!entities || entities.length === 0) {
+  if (entities.length === 0) {
     await ctx.reply("No entities found in this message.");
     return;
   }
