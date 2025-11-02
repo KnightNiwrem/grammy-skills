@@ -174,17 +174,3 @@ export function createFilterBot(token: string): Bot {
 
   return bot;
 }
-
-// Example usage
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  const bot = createFilterBot(token);
-  console.log("Filter bot is starting...");
-  bot.start();
-}

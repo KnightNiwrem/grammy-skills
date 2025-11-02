@@ -71,20 +71,3 @@ export function createBot(token: string): Bot {
 
   return bot;
 }
-
-// Example usage (not executed during import)
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  const bot = createBot(token);
-
-  // Start the bot with long polling
-  // This continuously fetches updates from Telegram servers
-  console.log("Bot is starting...");
-  bot.start();
-}

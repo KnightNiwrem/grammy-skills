@@ -281,17 +281,3 @@ export function createErrorHandlingBot(token: string): Bot {
 
   return bot;
 }
-
-// Example usage
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  const bot = createErrorHandlingBot(token);
-  console.log("Error handling bot is starting...");
-  bot.start();
-}

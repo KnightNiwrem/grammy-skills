@@ -203,17 +203,3 @@ export function createCommandBot(token: string): Bot {
 
   return bot;
 }
-
-// Example usage
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  const bot = createCommandBot(token);
-  console.log("Command bot is starting...");
-  bot.start();
-}

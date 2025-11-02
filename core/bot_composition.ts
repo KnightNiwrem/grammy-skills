@@ -310,29 +310,3 @@ export function createStatefulFeature(): Composer<Context> {
 
   return composer;
 }
-
-// Example usage
-if (import.meta.main) {
-  const token = Deno.env.get("BOT_TOKEN");
-
-  if (!token) {
-    console.error("BOT_TOKEN environment variable is required");
-    Deno.exit(1);
-  }
-
-  // Parse admin IDs from environment
-  const adminIdsStr = Deno.env.get("ADMIN_IDS") ?? "";
-  const adminIds = new Set(
-    adminIdsStr.split(",").map((id) => parseInt(id.trim())).filter((id) =>
-      !isNaN(id)
-    ),
-  );
-
-  const bot = createComposedBot(token, { adminIds });
-
-  // Optionally add stateful feature
-  bot.use(createStatefulFeature());
-
-  console.log("Composed bot is starting...");
-  bot.start();
-}
