@@ -29,16 +29,16 @@ export function createBot(token: string): Bot {
 
   // Command handler for /start
   // This is typically the first command users see when they start a bot
-  bot.command("start", (ctx) => {
-    return ctx.reply(
+  bot.command("start", async (ctx) => {
+    await ctx.reply(
       "Welcome! I'm a basic bot demonstrating grammY patterns.",
     );
   });
 
   // Command handler for /help
   // Provides information about available commands
-  bot.command("help", (ctx) => {
-    return ctx.reply(
+  bot.command("help", async (ctx) => {
+    await ctx.reply(
       "Available commands:\n" +
         "/start - Start the bot\n" +
         "/help - Show this help message\n" +
@@ -48,24 +48,25 @@ export function createBot(token: string): Bot {
 
   // Command handler with argument extraction
   // Demonstrates accessing command arguments from context
-  bot.command("echo", (ctx) => {
+  bot.command("echo", async (ctx) => {
     // ctx.match contains the text after the command
     const text = ctx.match;
 
     if (!text) {
-      return ctx.reply("Please provide text to echo. Usage: /echo <text>");
+      await ctx.reply("Please provide text to echo. Usage: /echo <text>");
+      return;
     }
 
-    return ctx.reply(text);
+    await ctx.reply(text);
   });
 
   // Handle all text messages that aren't commands
   // bot.on() with filter query for specific message types
-  bot.on("message:text", (ctx) => {
+  bot.on("message:text", async (ctx) => {
     // Access the message text through context
     const messageText = ctx.message.text;
 
-    return ctx.reply(`You said: ${messageText}`);
+    await ctx.reply(`You said: ${messageText}`);
   });
 
   return bot;

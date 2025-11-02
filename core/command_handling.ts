@@ -18,8 +18,8 @@ import { Bot, type CommandContext, type Context } from "grammy";
  *
  * This is the most basic command pattern.
  */
-function handleStartCommand(ctx: CommandContext<Context>): Promise<unknown> {
-  return ctx.reply("Welcome! Use /help to see available commands.");
+async function handleStartCommand(ctx: CommandContext<Context>): Promise<void> {
+  await ctx.reply("Welcome! Use /help to see available commands.");
 }
 
 /**
@@ -30,17 +30,18 @@ function handleStartCommand(ctx: CommandContext<Context>): Promise<unknown> {
  * - Validating input
  * - Providing helpful error messages
  */
-function handleGreetCommand(ctx: CommandContext<Context>): Promise<unknown> {
+async function handleGreetCommand(ctx: CommandContext<Context>): Promise<void> {
   // ctx.match contains everything after the command
   const name = ctx.match?.trim();
 
   if (!name) {
-    return ctx.reply(
+    await ctx.reply(
       "Please provide a name. Usage: /greet <name>",
     );
+    return;
   }
 
-  return ctx.reply(`Hello, ${name}! Nice to meet you.`);
+  await ctx.reply(`Hello, ${name}! Nice to meet you.`);
 }
 
 /**
@@ -48,14 +49,15 @@ function handleGreetCommand(ctx: CommandContext<Context>): Promise<unknown> {
  *
  * Demonstrates parsing space-separated arguments.
  */
-function handleCalcCommand(ctx: CommandContext<Context>): Promise<unknown> {
+async function handleCalcCommand(ctx: CommandContext<Context>): Promise<void> {
   const args = ctx.match?.trim().split(/\s+/);
 
   if (!args || args.length !== 3) {
-    return ctx.reply(
+    await ctx.reply(
       "Usage: /calc <number> <operator> <number>\n" +
         "Example: /calc 5 + 3",
     );
+    return;
   }
 
   const [num1Str, operator, num2Str] = args;
@@ -64,7 +66,8 @@ function handleCalcCommand(ctx: CommandContext<Context>): Promise<unknown> {
 
   // Validate numbers
   if (isNaN(num1) || isNaN(num2)) {
-    return ctx.reply("Both operands must be valid numbers.");
+    await ctx.reply("Both operands must be valid numbers.");
+    return;
   }
 
   // Perform calculation
@@ -81,18 +84,20 @@ function handleCalcCommand(ctx: CommandContext<Context>): Promise<unknown> {
       break;
     case "/":
       if (num2 === 0) {
-        return ctx.reply("Cannot divide by zero.");
+        await ctx.reply("Cannot divide by zero.");
+        return;
       }
       result = num1 / num2;
       break;
     default:
-      return ctx.reply(
+      await ctx.reply(
         `Unknown operator: ${operator}\n` +
           "Supported operators: + - * /",
       );
+      return;
   }
 
-  return ctx.reply(`${num1} ${operator} ${num2} = ${result}`);
+  await ctx.reply(`${num1} ${operator} ${num2} = ${result}`);
 }
 
 /**
@@ -103,7 +108,7 @@ function handleCalcCommand(ctx: CommandContext<Context>): Promise<unknown> {
  * - Accessing chat information from ctx.chat
  * - Formatting responses with multiple data points
  */
-function handleInfoCommand(ctx: CommandContext<Context>): Promise<unknown> {
+async function handleInfoCommand(ctx: CommandContext<Context>): Promise<void> {
   // Extract user information
   const userId = ctx.from?.id;
   const username = ctx.from?.username;
@@ -125,7 +130,7 @@ function handleInfoCommand(ctx: CommandContext<Context>): Promise<unknown> {
     `- Chat Type: ${chatType}`,
   ].join("\n");
 
-  return ctx.reply(info);
+  await ctx.reply(info);
 }
 
 /**
@@ -134,32 +139,36 @@ function handleInfoCommand(ctx: CommandContext<Context>): Promise<unknown> {
  * This pattern allows a single command to have multiple sub-actions.
  * Example: /admin start, /admin stop, /admin status
  */
-function handleAdminCommand(ctx: CommandContext<Context>): Promise<unknown> {
+async function handleAdminCommand(ctx: CommandContext<Context>): Promise<void> {
   const args = ctx.match?.trim().split(/\s+/) ?? [];
   const subcommand = args[0]?.toLowerCase();
 
   switch (subcommand) {
     case "start":
-      return ctx.reply("Starting admin services...");
+      await ctx.reply("Starting admin services...");
+      return;
 
     case "stop":
-      return ctx.reply("Stopping admin services...");
+      await ctx.reply("Stopping admin services...");
+      return;
 
     case "status":
-      return ctx.reply("Admin services are running.");
+      await ctx.reply("Admin services are running.");
+      return;
 
     case "help":
     case undefined:
-      return ctx.reply(
+      await ctx.reply(
         "Admin Commands:\n" +
           "/admin start - Start services\n" +
           "/admin stop - Stop services\n" +
           "/admin status - Check status\n" +
           "/admin help - Show this help",
       );
+      return;
 
     default:
-      return ctx.reply(
+      await ctx.reply(
         `Unknown subcommand: ${subcommand}\n` +
           "Use /admin help for available commands.",
       );
@@ -180,8 +189,8 @@ export function createCommandBot(token: string): Bot {
   bot.command("admin", handleAdminCommand);
 
   // Help command that lists all available commands
-  bot.command("help", (ctx) => {
-    return ctx.reply(
+  bot.command("help", async (ctx) => {
+    await ctx.reply(
       "Available Commands:\n\n" +
         "/start - Start the bot\n" +
         "/help - Show this help message\n" +

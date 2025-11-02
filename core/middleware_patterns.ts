@@ -146,17 +146,17 @@ export function createBotWithMiddleware(token: string): Bot {
   bot.use(authenticationMiddleware(allowedUsers));
 
   // Command handlers (only reached if user is authenticated)
-  bot.command("start", (ctx) => {
-    return ctx.reply("Welcome, authorized user!");
+  bot.command("start", async (ctx) => {
+    await ctx.reply("Welcome, authorized user!");
   });
 
-  bot.command("status", (ctx) => {
-    return ctx.reply("Bot is running and you are authenticated.");
+  bot.command("status", async (ctx) => {
+    await ctx.reply("Bot is running and you are authenticated.");
   });
 
   // Message handler
-  bot.on("message:text", (ctx) => {
-    return ctx.reply(`Echo: ${ctx.message.text}`);
+  bot.on("message:text", async (ctx) => {
+    await ctx.reply(`Echo: ${ctx.message.text}`);
   });
 
   return bot;
