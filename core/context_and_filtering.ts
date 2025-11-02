@@ -52,19 +52,13 @@ bot.on(":forward_origin", async (ctx) => {
   await ctx.reply("You forwarded a message.");
 });
 
-bot.on("message").filter(
-  (ctx) => ctx.chat.type === "private",
-  async (ctx) => {
-    await ctx.reply("This is a private chat message.");
-  },
-);
+bot.chatType("private").on("message", async (ctx) => {
+  await ctx.reply("This is a private chat message.");
+});
 
-bot.on("message").filter(
-  (ctx) => ctx.chat.type === "group" || ctx.chat.type === "supergroup",
-  async (ctx) => {
-    await ctx.reply("This is a group message.");
-  },
-);
+bot.chatType(["group", "supergroup"]).on("message", async (ctx) => {
+  await ctx.reply("This is a group message.");
+});
 
 const adminIds = new Set([123456789, 987654321]);
 
