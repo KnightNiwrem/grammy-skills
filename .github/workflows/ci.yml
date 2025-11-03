@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        task: ["lint", "fmt", "check"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Run linter
+        run: deno lint
+        if: matrix.task == 'lint'
+
+      - name: Check formatting
+        run: deno fmt --check
+        if: matrix.task == 'fmt'
+
+      - name: Type check
+        run: deno task check
+        if: matrix.task == 'check'
