@@ -3,10 +3,10 @@
  *
  * This example demonstrates comprehensive error handling strategies in grammY:
  * - Try-catch in handlers
- * - Error boundaries with middleware
+ * - Error boundaries with bot.errorBoundary()
  * - Graceful degradation
  * - Logging errors to stderr
- * - Using middleware boundaries instead of bot.catch()
+ * - Using built-in error boundaries instead of custom middleware
  *
  * @module
  */
@@ -23,15 +23,8 @@ if (!token) throw new Error("BOT_TOKEN is required");
 
 const bot = new Bot(token);
 
-async function errorBoundary(
-  _ctx: Context,
-  next: () => Promise<void>,
-): Promise<void> {
-  try {
-    await next();
-  } catch (error) {
-    console.error("Error in middleware chain:", error);
-  }
+function errorHandler(error: Error): void {
+  console.error("Error in middleware chain:", error);
 }
 
 async function handleDivideCommand(ctx: Context): Promise<void> {
@@ -169,7 +162,7 @@ async function handleValidatedCommand(ctx: Context): Promise<void> {
   await ctx.reply(`You submitted: ${input}`);
 }
 
-bot.use(errorBoundary);
+bot.use(bot.errorBoundary(errorHandler));
 
 bot.command("divide", handleDivideCommand);
 bot.command("sendphoto", handleSendPhotoCommand);
