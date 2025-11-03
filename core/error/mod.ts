@@ -59,9 +59,6 @@ async function handleDivideCommand(ctx: Context): Promise<void> {
     await ctx.reply(`${num1} ÷ ${num2} = ${result}`);
   } catch (error) {
     console.error("Error in divide command:", error);
-    await ctx.reply(
-      "An unexpected error occurred. Please try again later.",
-    );
   }
 }
 
@@ -74,19 +71,16 @@ async function handleSendPhotoCommand(ctx: Context): Promise<void> {
   } catch (error) {
     if (error instanceof GrammyError) {
       if (error.error_code === 400) {
-        await ctx.reply(
+        console.error(
           "The photo URL is invalid or the image cannot be loaded.",
         );
       } else if (error.error_code === 403) {
         console.log("Bot was blocked by the user");
       } else {
-        await ctx.reply(`Failed to send photo: ${error.description}`);
+        console.error(`Failed to send photo: ${error.description}`);
       }
     } else {
       console.error("Unexpected error:", error);
-      await ctx.reply(
-        "An unexpected error occurred while sending the photo.",
-      );
     }
   }
 }
@@ -129,13 +123,6 @@ async function handleUnstableCommand(ctx: Context): Promise<void> {
     );
   } catch (error) {
     console.error("Failed after retries:", error);
-    try {
-      await ctx.reply(
-        "Service temporarily unavailable. Please try again later.",
-      );
-    } catch {
-      console.error("Failed to notify user of error");
-    }
   }
 }
 
