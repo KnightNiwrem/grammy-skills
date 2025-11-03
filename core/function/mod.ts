@@ -11,7 +11,7 @@
  * @module
  */
 
-import { Bot } from "grammy";
+import { Bot } from "https://deno.land/x/grammy@v1.30.0/mod.ts";
 import { handleStartCommand } from "./start_command.ts";
 import { handleGreetCommand } from "./greet_command.ts";
 import { handleCalcCommand } from "./calc_command.ts";

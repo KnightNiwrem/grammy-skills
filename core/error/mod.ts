@@ -11,7 +11,12 @@
  * @module
  */
 
-import { Bot, type Context, GrammyError, HttpError } from "grammy";
+import {
+  Bot,
+  type Context,
+  GrammyError,
+  HttpError,
+} from "https://deno.land/x/grammy@v1.30.0/mod.ts";
 
 const token = Deno.env.get("BOT_TOKEN");
 if (!token) throw new Error("BOT_TOKEN is required");
