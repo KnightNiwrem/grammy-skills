@@ -7,7 +7,10 @@
  * - Formatting responses with multiple data points
  */
 
-import { type CommandContext, type Context } from "grammy";
+import {
+  type CommandContext,
+  type Context,
+} from "https://deno.land/x/grammy@v1.30.0/mod.ts";
 
 export async function handleInfoCommand(
   ctx: CommandContext<Context>,
