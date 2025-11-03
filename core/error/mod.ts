@@ -3,16 +3,17 @@
  *
  * This example demonstrates comprehensive error handling strategies in grammY:
  * - Try-catch in handlers
- * - Error boundaries with bot.errorBoundary()
+ * - Error boundaries with Composer.errorBoundary()
  * - Graceful degradation
  * - Logging errors to stderr
- * - Using built-in error boundaries instead of custom middleware
+ * - Using Composer pattern for error boundaries
  *
  * @module
  */
 
 import {
   Bot,
+  Composer,
   type Context,
   GrammyError,
   HttpError,
@@ -26,6 +27,10 @@ const bot = new Bot(token);
 function errorHandler(error: Error): void {
   console.error("Error in middleware chain:", error);
 }
+
+// Create composer with error boundary protection
+const composer = new Composer();
+const protectedComposer = composer.errorBoundary(errorHandler);
 
 async function handleDivideCommand(ctx: Context): Promise<void> {
   try {
@@ -162,18 +167,17 @@ async function handleValidatedCommand(ctx: Context): Promise<void> {
   await ctx.reply(`You submitted: ${input}`);
 }
 
-bot.use(bot.errorBoundary(errorHandler));
+// Add middleware to protected composer
+protectedComposer.command("divide", handleDivideCommand);
+protectedComposer.command("sendphoto", handleSendPhotoCommand);
+protectedComposer.command("unstable", handleUnstableCommand);
+protectedComposer.command("validate", handleValidatedCommand);
 
-bot.command("divide", handleDivideCommand);
-bot.command("sendphoto", handleSendPhotoCommand);
-bot.command("unstable", handleUnstableCommand);
-bot.command("validate", handleValidatedCommand);
-
-bot.command("error", () => {
+protectedComposer.command("error", () => {
   throw new Error("This is a test error");
 });
 
-bot.command("help", async (ctx) => {
+protectedComposer.command("help", async (ctx) => {
   await ctx.reply(
     "Error Handling Demo Commands:\n\n" +
       "/divide <num> <num> - Division with error handling\n" +
@@ -183,5 +187,8 @@ bot.command("help", async (ctx) => {
       "/error - Trigger test error",
   );
 });
+
+// Use the base composer (not the protected one) as per the pattern
+bot.use(composer);
 
 bot.start();
