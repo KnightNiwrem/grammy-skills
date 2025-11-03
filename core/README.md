@@ -1,6 +1,6 @@
 # Core grammY Patterns
 
-This directory contains idiomatic examples of using the grammY bot library with no additional plugins.
+This directory contains idiomatic examples of using the grammY bot library with no additional plugins, organized by topic.
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The examples here demonstrate best practices for:
 
 ## Examples
 
-### basic_bot.ts
+### basic/mod.ts
 
 Demonstrates fundamental bot setup including:
 
@@ -26,37 +26,17 @@ Demonstrates fundamental bot setup including:
 - Command argument extraction
 - Starting the bot with long polling
 
-### middleware_patterns.ts
+### composer/mod.ts
 
-Shows various middleware patterns:
+Shows how to organize larger bots:
 
-- Logging middleware for tracking updates
-- Response time measurement middleware
-- Authentication middleware with user filtering
-- Error handling middleware
-- Middleware composition and execution order
+- Using `Composer` to group related handlers
+- Breaking functionality into feature modules
+- Composing features into a main bot
+- Managing feature-specific state
+- Cross-cutting concerns (logging, error handling)
 
-### command_handling.ts
-
-Covers different command handling approaches:
-
-- Simple commands with static responses
-- Commands with arguments and validation
-- Multi-argument parsing and processing
-- Extracting user and chat information
-- Subcommand patterns (e.g., `/admin start`, `/admin stop`)
-
-### context_and_filtering.ts
-
-Demonstrates context usage and message filtering:
-
-- Using context shortcuts (`ctx.msg`, `ctx.chat`, `ctx.from`)
-- Filter queries for different message types
-- Entity extraction (URLs, mentions, etc.)
-- Handling forwarded and edited messages
-- Filtering by chat type and user ID
-
-### error_handling.ts
+### error/mod.ts
 
 Comprehensive error handling strategies:
 
@@ -67,15 +47,25 @@ Comprehensive error handling strategies:
 - Retry logic for transient failures
 - Input validation and sanitization
 
-### bot_composition.ts
+### filter/mod.ts
 
-Shows how to organize larger bots:
+Demonstrates context usage and message filtering:
 
-- Using `Composer` to group related handlers
-- Breaking functionality into feature modules
-- Composing features into a main bot
-- Managing feature-specific state
-- Cross-cutting concerns (logging, error handling)
+- Using context shortcuts (`ctx.msg`, `ctx.chat`, `ctx.from`)
+- Filter queries for different message types
+- Entity extraction (URLs, mentions, etc.)
+- Handling forwarded and edited messages
+- Filtering by chat type and user ID
+
+### function/mod.ts
+
+Covers different command handling approaches:
+
+- Simple commands with static responses
+- Commands with arguments and validation
+- Multi-argument parsing and processing
+- Extracting user and chat information
+- Subcommand patterns (e.g., `/admin start`, `/admin stop`)
 
 ## Usage
 
@@ -86,7 +76,7 @@ Each example file can be run independently:
 export BOT_TOKEN="your_bot_token_here"
 
 # Run an example
-deno run --allow-net --allow-env core/basic_bot.ts
+deno run --allow-net --allow-env core/basic/mod.ts
 ```
 
 The examples are self-contained and demonstrate idiomatic grammY patterns. Each file creates and configures a bot instance directly, making them simple to understand and adapt to your needs.
