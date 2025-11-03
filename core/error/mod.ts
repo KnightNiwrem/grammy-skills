@@ -2,11 +2,11 @@
  * Error Handling Patterns
  *
  * This example demonstrates comprehensive error handling strategies in grammY:
- * - Global error handlers using bot.catch()
  * - Try-catch in handlers
  * - Error boundaries with middleware
  * - Graceful degradation
- * - User-friendly error messages
+ * - Logging errors to stderr
+ * - Using middleware boundaries instead of bot.catch()
  *
  * @module
  */
@@ -24,21 +24,13 @@ if (!token) throw new Error("BOT_TOKEN is required");
 const bot = new Bot(token);
 
 async function errorBoundary(
-  ctx: Context,
+  _ctx: Context,
   next: () => Promise<void>,
 ): Promise<void> {
   try {
     await next();
   } catch (error) {
     console.error("Error in middleware chain:", error);
-    try {
-      await ctx.reply(
-        "An error occurred while processing your request. " +
-          "Our team has been notified.",
-      );
-    } catch (replyError) {
-      console.error("Failed to send error message to user:", replyError);
-    }
   }
 }
 
@@ -176,21 +168,6 @@ async function handleValidatedCommand(ctx: Context): Promise<void> {
 
   await ctx.reply(`You submitted: ${input}`);
 }
-
-bot.catch((err) => {
-  const ctx = err.ctx;
-  console.error(`Error while handling update ${ctx.update.update_id}:`);
-  const error = err.error;
-
-  if (error instanceof GrammyError) {
-    console.error("Error in request:", error.description);
-    console.error("Error code:", error.error_code);
-  } else if (error instanceof HttpError) {
-    console.error("Could not contact Telegram:", error);
-  } else {
-    console.error("Unknown error:", error);
-  }
-});
 
 bot.use(errorBoundary);
 
