@@ -12,11 +12,11 @@
  */
 
 import { Bot } from "https://deno.land/x/grammy@v1.30.0/mod.ts";
-import { handleStartCommand } from "./start_command.ts";
-import { handleGreetCommand } from "./greet_command.ts";
-import { handleCalcCommand } from "./calc_command.ts";
-import { handleInfoCommand } from "./info_command.ts";
-import { handleAdminCommand } from "./admin_command.ts";
+import { handleStartCommand } from "./commands/start.ts";
+import { handleGreetCommand } from "./commands/greet.ts";
+import { handleCalcCommand } from "./commands/calc.ts";
+import { handleInfoCommand } from "./commands/info.ts";
+import { handleAdminCommand } from "./commands/admin.ts";
 
 const token = Deno.env.get("BOT_TOKEN");
 if (!token) throw new Error("BOT_TOKEN is required");

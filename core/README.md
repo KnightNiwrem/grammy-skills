@@ -10,7 +10,6 @@ The examples here demonstrate best practices for:
 - Middleware patterns and composition
 - Context handling and type safety
 - Command handling
-- Message filtering and routing
 - Error handling
 - State management without external plugins
 
@@ -26,16 +25,6 @@ Demonstrates fundamental bot setup including:
 - Command argument extraction
 - Starting the bot with long polling
 
-### composer/mod.ts
-
-Shows how to organize larger bots:
-
-- Using `Composer` to group related handlers
-- Breaking functionality into feature modules
-- Composing features into a main bot
-- Managing feature-specific state
-- Cross-cutting concerns (logging, error handling)
-
 ### error/mod.ts
 
 Comprehensive error handling strategies:
@@ -47,17 +36,7 @@ Comprehensive error handling strategies:
 - Retry logic for transient failures
 - Input validation and sanitization
 
-### filter/mod.ts
-
-Demonstrates context usage and message filtering:
-
-- Using context shortcuts (`ctx.msg`, `ctx.chat`, `ctx.from`)
-- Filter queries for different message types
-- Entity extraction (URLs, mentions, etc.)
-- Handling forwarded and edited messages
-- Filtering by chat type and user ID
-
-### function/mod.ts
+### functions/mod.ts
 
 Covers different command handling approaches:
 
