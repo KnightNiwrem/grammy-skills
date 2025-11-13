@@ -1,6 +1,6 @@
 # Core grammY Patterns
 
-This directory contains idiomatic examples of using the grammY bot library with no additional plugins, organized by topic.
+This directory contains idiomatic examples of using the grammY bot library, organized by topic. It includes both core library features and built-in plugins maintained by the grammY team.
 
 ## Purpose
 
@@ -12,6 +12,7 @@ The examples here demonstrate best practices for:
 - Command handling
 - Error handling
 - State management without external plugins
+- Using built-in plugins for common functionality
 
 ## Examples
 
@@ -46,6 +47,27 @@ Covers different command handling approaches:
 - Extracting user and chat information
 - Subcommand patterns (e.g., `/admin start`, `/admin stop`)
 
+### media-group/mod.ts
+
+Demonstrates the built-in media group plugin:
+
+- Detecting and handling media sent as albums
+- Processing complete media groups after all items are received
+- Differentiating between grouped and single media
+- Accessing individual media items within a group
+- Handling mixed media types (photos, videos, documents)
+
+### inline-query/mod.ts
+
+Demonstrates the built-in inline query plugin:
+
+- Pattern-based inline query matching
+- Returning different types of inline results (articles, photos, etc.)
+- Handling chosen inline results for analytics
+- Implementing pagination with offset-based loading
+- Providing interactive results with inline keyboards
+- Caching strategies for inline query results
+
 ## Usage
 
 Each example file can be run independently:
@@ -62,8 +84,8 @@ The examples are self-contained and demonstrate idiomatic grammY patterns. Each 
 
 ## Guidelines
 
-- All examples use only the core grammY library
-- No grammY plugins are used in this directory
+- Examples use the core grammY library and built-in plugins maintained by the grammY team
+- Only built-in plugins (like media-group, inline-query) are included; third-party plugins are in separate directories
 - Code follows Deno best practices (see [AGENTS.md](../AGENTS.md))
 - Examples are meant to be educational and reusable
 - Each example is well-documented with explanatory comments
