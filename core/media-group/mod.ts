@@ -77,7 +77,11 @@ bot.command("local", async (ctx) => {
 });
 
 // Handle incoming media groups
-bot.on("message:media_group_id", async (ctx) => {
+// Note: Media can be photos, videos, etc. We check for media_group_id to identify groups
+bot.on("message", async (ctx) => {
+  // Only process if this message is part of a media group
+  if (!ctx.message?.media_group_id) return;
+
   const mediaGroupId = ctx.message.media_group_id;
 
   // Note: When users send media groups, Telegram sends each item as a separate update

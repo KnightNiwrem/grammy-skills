@@ -41,7 +41,7 @@ bot.on("inline_query", async (ctx) => {
     InlineQueryResultBuilder.photo(
       "photo-grammy",
       "https://grammy.dev/images/grammY.png",
-    ).title("grammY Logo"),
+    ),
   );
 
   // Article with text - always available
@@ -114,7 +114,7 @@ bot.on("inline_query", async (ctx) => {
       InlineQueryResultBuilder.photo(
         "photo-y",
         "https://grammy.dev/images/Y.svg",
-      ).title("The Y from grammY"),
+      ),
     );
   }
 
