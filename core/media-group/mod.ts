@@ -15,7 +15,7 @@
 
 import {
   Bot,
-  InputFile,
+  InputFile as _InputFile,
   InputMediaBuilder,
 } from "https://deno.land/x/grammy@v1.30.0/mod.ts";
 

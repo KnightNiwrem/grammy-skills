@@ -127,7 +127,7 @@ bot.on("inline_query", async (ctx) => {
 
 // Handle when a user selects an inline result
 // This is optional but useful for analytics
-bot.on("chosen_inline_result", async (ctx) => {
+bot.on("chosen_inline_result", (ctx) => {
   const result = ctx.chosenInlineResult;
   console.log(
     `User ${result.from.id} chose result: ${result.result_id}`,
