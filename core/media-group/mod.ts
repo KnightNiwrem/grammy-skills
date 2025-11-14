@@ -89,7 +89,7 @@ bot.on("message", async (ctx) => {
   // before processing.
   await ctx.reply(
     `Received media from group: ${mediaGroupId}\n` +
-      `This is item in the group. Media groups arrive as separate updates.`,
+      `This is an item in the group. Media groups arrive as separate updates.`,
   );
 });
 
