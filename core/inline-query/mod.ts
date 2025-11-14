@@ -17,19 +17,12 @@
  * @module
  */
 
-import {
-  Bot,
-  InlineKeyboard,
-} from "https://deno.land/x/grammy@v1.30.0/mod.ts";
-import { inlineQuery } from "https://deno.land/x/grammy@v1.30.0/plugins/inline-query.ts";
+import { Bot, InlineKeyboard } from "https://deno.land/x/grammy@v1.30.0/mod.ts";
 
 const token = Deno.env.get("BOT_TOKEN");
 if (!token) throw new Error("BOT_TOKEN is required");
 
 const bot = new Bot(token);
-
-// Apply the inline query plugin
-bot.use(inlineQuery());
 
 // Handle empty inline queries (user types @botname with no search term)
 bot.inlineQuery("", async (ctx) => {
@@ -41,8 +34,8 @@ bot.inlineQuery("", async (ctx) => {
         title: "Welcome!",
         description: "Learn how to use inline queries",
         input_message_content: {
-          message_text:
-            "👋 Welcome! Try typing @" + ctx.me.username + " search <term>",
+          message_text: "👋 Welcome! Try typing @" + ctx.me.username +
+            " search <term>",
         },
       },
       {
@@ -51,8 +44,7 @@ bot.inlineQuery("", async (ctx) => {
         title: "Help",
         description: "Get help with inline queries",
         input_message_content: {
-          message_text:
-            "Available inline commands:\n" +
+          message_text: "Available inline commands:\n" +
             "• search <term> - Search for articles\n" +
             "• number <n> - Generate a number fact\n" +
             "• random - Get a random result",
@@ -121,8 +113,7 @@ bot.inlineQuery(/^number\s+(\d+)/, async (ctx) => {
       title: `Number ${number}`,
       description: `Information about ${number}`,
       input_message_content: {
-        message_text:
-          `🔢 The number ${number}\n\n` +
+        message_text: `🔢 The number ${number}\n\n` +
           `• Square: ${number * number}\n` +
           `• Double: ${number * 2}\n` +
           `• Half: ${number / 2}`,
@@ -177,7 +168,7 @@ bot.inlineQuery(/^paginate/, async (ctx) => {
 });
 
 // Handle when user actually sends an inline result
-bot.on("chosen_inline_result", async (ctx) => {
+bot.on("chosen_inline_result", (ctx) => {
   const resultId = ctx.chosenInlineResult.result_id;
   const query = ctx.chosenInlineResult.query;
 
