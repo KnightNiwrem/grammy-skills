@@ -143,7 +143,7 @@ bot.command("start", async (ctx) => {
     "Welcome! This bot demonstrates inline query handling.\n\n" +
       "To use inline mode:\n" +
       "1. Go to any chat\n" +
-      "2. Type @" + ctx.me.username + " followed by a search query\n" +
+      `2. Type @${ctx.me.username} followed by a search query\n` +
       "3. Select from the results\n\n" +
       "Try searching for: hello, help, photo, or just browse!",
   );
@@ -153,7 +153,7 @@ bot.command("help", async (ctx) => {
   await ctx.reply(
     "Inline Query Demo:\n\n" +
       "Use inline mode in any chat:\n" +
-      "@" + ctx.me.username + " <search query>\n\n" +
+      `@${ctx.me.username} <search query>\n\n` +
       "Search terms:\n" +
       "• 'hello' or 'hi' - Get a greeting\n" +
       "• 'help' - Show help information\n" +
