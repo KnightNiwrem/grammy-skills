@@ -22,7 +22,7 @@ import {
   Bot,
   InlineKeyboard,
   InlineQueryResultBuilder,
-} from "https://deno.land/x/grammy@v1.30.0/mod.ts";
+} from "https://deno.land/x/grammy@v1.38.3/mod.ts";
 
 const token = Deno.env.get("BOT_TOKEN");
 if (!token) throw new Error("BOT_TOKEN is required");
@@ -31,98 +31,109 @@ const bot = new Bot(token);
 
 // Handle inline queries
 bot.on("inline_query", async (ctx) => {
-  const query = ctx.inlineQuery.query.toLowerCase();
+  try {
+    const query = ctx.inlineQuery.query.toLowerCase();
 
-  // Build different results based on the query
-  const results = [];
+    // Build different results based on the query
+    const results = [];
 
-  // Photo result - always available
-  results.push(
-    InlineQueryResultBuilder.photo(
-      "photo-grammy",
-      "https://grammy.dev/images/grammY.png",
-    ),
-  );
-
-  // Article with text - always available
-  results.push(
-    InlineQueryResultBuilder.article(
-      "article-docs",
-      "grammY Documentation",
-    ).text(
-      "Check out the grammY documentation at https://grammy.dev\n\n" +
-        "grammY is a powerful framework for building Telegram bots!",
-    ),
-  );
-
-  // Article with inline keyboard
-  const keyboard = new InlineKeyboard()
-    .url("Visit grammY", "https://grammy.dev")
-    .row()
-    .url("GitHub", "https://github.com/grammyjs/grammY");
-
-  results.push(
-    InlineQueryResultBuilder.article(
-      "article-links",
-      "grammY Resources",
-      { reply_markup: keyboard },
-    ).text("Useful grammY links:"),
-  );
-
-  // Article with Markdown formatting
-  results.push(
-    InlineQueryResultBuilder.article(
-      "article-formatted",
-      "Formatted Message",
-    ).text(
-      "*grammY* is _amazing_!\n\n" +
-        "• Easy to use\n" +
-        "• Type-safe\n" +
-        "• Well documented\n\n" +
-        "[Learn more](https://grammy.dev)",
-      { parse_mode: "Markdown" },
-    ),
-  );
-
-  // Query-specific results
-  if (query.includes("hello") || query.includes("hi")) {
-    results.push(
-      InlineQueryResultBuilder.article(
-        "greeting",
-        "Send a Greeting",
-      ).text("👋 Hello there! How can I help you today?"),
-    );
-  }
-
-  if (query.includes("help")) {
-    results.push(
-      InlineQueryResultBuilder.article(
-        "help",
-        "Help Information",
-      ).text(
-        "Try searching for:\n" +
-          "• 'hello' - Get a greeting\n" +
-          "• 'help' - Show this help\n" +
-          "• 'photo' - Get photo results\n" +
-          "• Or just browse all results!",
-      ),
-    );
-  }
-
-  if (query.includes("photo")) {
+    // Photo result - always available
     results.push(
       InlineQueryResultBuilder.photo(
-        "photo-y",
-        "https://grammy.dev/images/Y.svg",
+        "photo-grammy",
+        "https://grammy.dev/images/grammY.png",
       ),
     );
-  }
 
-  // Answer the inline query
-  // You can limit results, set cache time, and more
-  await ctx.answerInlineQuery(results, {
-    cache_time: 30, // Cache results for 30 seconds
-  });
+    // Article with text - always available
+    results.push(
+      InlineQueryResultBuilder.article(
+        "article-docs",
+        "grammY Documentation",
+      ).text(
+        "Check out the grammY documentation at https://grammy.dev\n\n" +
+          "grammY is a powerful framework for building Telegram bots!",
+      ),
+    );
+
+    // Article with inline keyboard
+    const keyboard = new InlineKeyboard()
+      .url("Visit grammY", "https://grammy.dev")
+      .row()
+      .url("GitHub", "https://github.com/grammyjs/grammY");
+
+    results.push(
+      InlineQueryResultBuilder.article(
+        "article-links",
+        "grammY Resources",
+        { reply_markup: keyboard },
+      ).text("Useful grammY links:"),
+    );
+
+    // Article with Markdown formatting
+    results.push(
+      InlineQueryResultBuilder.article(
+        "article-formatted",
+        "Formatted Message",
+      ).text(
+        "*grammY* is _amazing_!\n\n" +
+          "• Easy to use\n" +
+          "• Type-safe\n" +
+          "• Well documented\n\n" +
+          "[Learn more](https://grammy.dev)",
+        { parse_mode: "Markdown" },
+      ),
+    );
+
+    // Query-specific results
+    if (query.includes("hello") || query.includes("hi")) {
+      results.push(
+        InlineQueryResultBuilder.article(
+          "greeting",
+          "Send a Greeting",
+        ).text("👋 Hello there! How can I help you today?"),
+      );
+    }
+
+    if (query.includes("help")) {
+      results.push(
+        InlineQueryResultBuilder.article(
+          "help",
+          "Help Information",
+        ).text(
+          "Try searching for:\n" +
+            "• 'hello' - Get a greeting\n" +
+            "• 'help' - Show this help\n" +
+            "• 'photo' - Get photo results\n" +
+            "• Or just browse all results!",
+        ),
+      );
+    }
+
+    if (query.includes("photo")) {
+      results.push(
+        InlineQueryResultBuilder.photo(
+          "photo-y",
+          "https://grammy.dev/images/Y.svg",
+        ),
+      );
+    }
+
+    // Answer the inline query
+    // You can limit results, set cache time, and more
+    await ctx.answerInlineQuery(results, {
+      cache_time: 30, // Cache results for 30 seconds
+    });
+  } catch (error) {
+    // Log the error to prevent crashes
+    console.error("Error handling inline query:", error);
+
+    // Gracefully respond with empty results to avoid leaving the query unanswered
+    await ctx.answerInlineQuery([], {
+      cache_time: 10, // Short cache time for error responses
+      is_personal: true, // Don't cache error responses globally
+    });
+  }
 });
 
 // Handle when a user selects an inline result
