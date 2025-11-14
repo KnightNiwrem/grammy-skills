@@ -12,6 +12,8 @@ The examples here demonstrate best practices for:
 - Command handling
 - Error handling
 - State management without external plugins
+- Media group handling
+- Inline query responses
 
 ## Examples
 
@@ -45,6 +47,27 @@ Covers different command handling approaches:
 - Multi-argument parsing and processing
 - Extracting user and chat information
 - Subcommand patterns (e.g., `/admin start`, `/admin stop`)
+
+### media-group/mod.ts
+
+Demonstrates sending and handling media groups:
+
+- Using `InputMediaBuilder` to create media objects
+- Sending media groups with `sendMediaGroup`
+- Handling incoming media group messages
+- Working with different media types (photo, video, audio, document)
+- Using public URLs vs. local files with `InputFile`
+
+### inline-query/mod.ts
+
+Shows how to handle inline queries:
+
+- Listening for inline queries with `bot.on("inline_query")`
+- Using `InlineQueryResultBuilder` to create results
+- Different result types (photo, article, etc.)
+- Adding inline keyboards to results
+- Handling result selections with `chosen_inline_result`
+- Query-based result filtering
 
 ## Usage
 
